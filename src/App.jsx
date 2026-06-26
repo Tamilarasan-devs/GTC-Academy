@@ -1,16 +1,22 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
-import AppRoutes from './component/Routes/AppRoutes'
+import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import AppRoutes from './component/Routes/AppRoutes';
+import { AuthProvider } from './context/AuthContext';
+import WhatsAppButton from './component/common/WhatsAppButton';
+import ScrollToTop from './component/common/ScrollToTop';
 
 function App() {
   return (
-    <>
-      <AppRoutes />
-    </>
-  )
+    <BrowserRouter>
+      <AuthProvider>
+        <ScrollToTop />
+        <div className="flex flex-col min-h-screen">
+          <AppRoutes />
+          <WhatsAppButton />
+        </div>
+      </AuthProvider>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

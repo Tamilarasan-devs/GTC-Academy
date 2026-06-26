@@ -1,335 +1,195 @@
-
-import React from "react";
-import {
-  BookOpen,
-  Calculator,
-  FileText,
-  Briefcase,
-  BarChart3,
-  ShieldCheck,
-  ArrowRight,
-  CheckCircle2,
-} from "lucide-react";
+import React, { useState, useEffect } from "react";
+import api from "../../utils/api";
+import { useAuth } from "../../context/AuthContext";
+import { BookOpen, CheckCircle2, Clock, PlayCircle, Shield, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Course() {
-  const careers = [
-    "Accountant",
-    "Junior Accountant",
-    "Senior Accountant",
-    "GST Executive",
-    "Tax Consultant",
-    "Accounts Executive",
-    "Payroll Executive",
-    "Finance Executive",
-    "Audit Assistant",
-    "Tally Operator",
-    "Office Administrator",
-    "Accounts Manager",
-  ];
+  const [courses, setCourses] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-  const values = [
-    "Excellence",
-    "Integrity",
-    "Innovation",
-    "Commitment",
-    "Professionalism",
-  ];
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const res = await api.get("/courses");
+        const publishedCourses = res.data.courses.filter(c => c.isPublished);
+        setCourses(publishedCourses);
 
-  const methodology = [
-    "Classroom Training",
-    "Practical Lab Sessions",
-    "Real-Time Projects",
-    "Case Studies",
-    "Assessments",
-    "Certification",
-  ];
+        // Extract unique categories
+        const uniqueCategories = ["All", ...new Set(publishedCourses.map(c => c.category))];
+        setCategories(uniqueCategories);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourses();
+  }, []);
+
+  const handleEnroll = async (courseId) => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    try {
+      const res = await api.post("/payments/create-order", { courseId });
+      const { order, key } = res.data;
+
+      const options = {
+        key,
+        amount: order.amount,
+        currency: "INR",
+        name: "GTC Education Academy",
+        description: "Course Enrollment",
+        order_id: order.id,
+        handler: async function (response) {
+          try {
+            await api.post("/payments/verify", {
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+              courseId,
+            });
+            navigate("/student/my-courses");
+          } catch (err) {
+            alert("Payment verification failed.");
+          }
+        },
+        prefill: {
+          name: user.name,
+          email: user.email,
+          contact: user.phone,
+        },
+        theme: { color: "#2563EB" },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      alert("Error creating payment order");
+    }
+  };
+
+  const filteredCourses = activeCategory === "All" ? courses : courses.filter(c => c.category === activeCategory);
 
   return (
-    <div className="bg-slate-50 text-slate-900 overflow-hidden">
-      {/* HERO */}
-      <section className="relative bg-slate-950 text-white">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-indigo-600/20 to-cyan-500/20" />
-
-        <div className="relative max-w-7xl mx-auto px-6 py-28">
-          <span className="inline-flex items-center px-4 py-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-xl text-sm">
-            Professional Accounting Training Institute
-          </span>
-
-          <h1 className="mt-8 text-5xl md:text-7xl font-bold leading-tight">
-            Become an
-            <span className="block text-blue-400">
-              Industry Ready Accountant
-            </span>
-          </h1>
-
-          <p className="mt-8 text-lg md:text-xl text-slate-300 max-w-3xl">
-            Learn Accounting, Tally Prime, GST, Income Tax, Payroll and
-            Advanced Excel through practical training, real business scenarios,
-            and expert guidance.
+    <div className="bg-slate-50 min-h-screen">
+      {/* Hero */}
+      <section className="bg-slate-950 text-white py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 to-transparent" />
+        <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6">Our <span className="text-blue-400">Courses</span></h1>
+          <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+            Choose from our wide range of professional courses and take the next step in your career.
           </p>
+        </div>
+      </section>
 
-          <div className="flex flex-wrap gap-4 mt-10">
-            <button className="px-8 py-4 bg-blue-600 hover:bg-blue-700 rounded-2xl font-semibold transition">
-              Explore Courses
+      {/* Category Filter */}
+      <section className="max-w-7xl mx-auto px-6 py-12">
+        <div className="flex flex-wrap justify-center gap-4 mb-16">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
+                activeCategory === cat
+                  ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
+                  : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+              }`}
+            >
+              {cat}
             </button>
-
-            <button className="px-8 py-4 border border-white/20 rounded-2xl backdrop-blur-xl hover:bg-white/10 transition">
-              Contact Us
-            </button>
-          </div>
-
-          {/* Stats */}
-          <div className="grid md:grid-cols-4 gap-6 mt-20">
-            {[
-              ["6+", "Professional Programs"],
-              ["100%", "Practical Training"],
-              ["Placement", "Support Available"],
-              ["Industry", "Focused Curriculum"],
-            ].map(([value, label]) => (
-              <div
-                key={label}
-                className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[28px] p-6"
-              >
-                <h3 className="text-3xl font-bold">{value}</h3>
-                <p className="text-slate-400 mt-2">{label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* COURSES */}
-      <section className="max-w-7xl mx-auto px-6 py-28">
-        <div className="text-center mb-16">
-          <span className="text-blue-600 font-semibold uppercase tracking-wider">
-            Courses Offered
-          </span>
-
-          <h2 className="text-5xl font-bold mt-4">
-            Learn In-Demand Finance Skills
-          </h2>
+          ))}
         </div>
 
-        <div className="grid lg:grid-cols-4 gap-6">
-          {/* Large Card */}
-          <div className="lg:col-span-2 lg:row-span-2 rounded-[36px] bg-gradient-to-br from-blue-600 to-indigo-700 text-white p-10">
-            <BookOpen size={40} />
+        {loading ? (
+          <div className="flex justify-center"><div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" /></div>
+        ) : (
+          <div className="space-y-12">
+            {categories.filter(c => c !== "All").map(category => {
+              if (activeCategory !== "All" && activeCategory !== category) return null;
+              const categoryCourses = courses.filter(c => c.category === category);
+              if (categoryCourses.length === 0) return null;
 
-            <h3 className="text-3xl font-bold mt-8">
-              Professional Accounting Program
-            </h3>
+              return (
+                <div key={category} className="mb-16">
+                  <h2 className="text-3xl font-bold text-slate-900 mb-8 flex items-center gap-4">
+                    <span className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center"><BookOpen size={16} className="text-blue-600"/></span>
+                    {category}
+                  </h2>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {categoryCourses.map(course => (
+                      <div key={course._id} className="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group">
+                        <div className="h-56 bg-slate-100 relative overflow-hidden">
+                          {course.thumbnailUrl ? (
+                            <img src={`http://localhost:8080${course.thumbnailUrl}`} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
+                              <BookOpen size={48} className="text-white/20" />
+                            </div>
+                          )}
+                          <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl font-bold text-slate-900 shadow-sm flex items-center gap-1">
+                            <Clock size={14} className="text-blue-600"/> {course.validity} Days
+                          </div>
+                        </div>
 
-            <p className="mt-4 text-blue-100">
-              Complete accounting workflow from Journal Entries to Financial
-              Statements and Final Accounts.
-            </p>
+                        <div className="p-8 flex-1 flex flex-col">
+                          <h3 className="text-2xl font-bold text-slate-900 mb-3">{course.title}</h3>
+                          <p className="text-slate-600 mb-6 flex-1">{course.shortDescription}</p>
 
-            <div className="grid grid-cols-2 gap-3 mt-8">
-              {[
-                "Journal Entries",
-                "Ledger",
-                "Trial Balance",
-                "Final Accounts",
-                "Balance Sheet",
-                "Bank Reconciliation",
-              ].map((item) => (
-                <div
-                  key={item}
-                  className="bg-white/10 rounded-xl px-4 py-3"
-                >
-                  {item}
+                          <div className="space-y-3 mb-8">
+                            {course.features?.slice(0, 4).map((f, i) => (
+                              <p key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                                <CheckCircle2 size={16} className="text-green-500 shrink-0 mt-0.5" />
+                                {f}
+                              </p>
+                            ))}
+                          </div>
+
+                          <div className="pt-6 border-t border-slate-100 mt-auto">
+                            <div className="flex items-end justify-between mb-6">
+                              <div>
+                                <p className="text-sm text-slate-500 font-medium mb-1">Course Fee</p>
+                                <div className="flex items-baseline gap-2">
+                                  <span className="text-3xl font-bold text-slate-900">₹{course.discountPrice || course.price}</span>
+                                  {course.discountPrice && <span className="text-lg text-slate-400 line-through">₹{course.price}</span>}
+                                </div>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => handleEnroll(course._id)}
+                              className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-lg transition-all shadow-lg shadow-blue-600/25 flex items-center justify-center gap-2"
+                            >
+                              Enroll Now <ArrowRight size={20} />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
-
-          {/* Tally */}
-          <div className="bg-white rounded-[32px] p-8 border border-slate-200 shadow-sm">
-            <Calculator className="text-green-600" size={36} />
-            <h3 className="font-bold text-2xl mt-5">Tally Prime</h3>
-            <p className="mt-3 text-slate-500">
-              GST, Inventory, Payroll, Banking & Reports.
-            </p>
-          </div>
-
-          {/* GST */}
-          <div className="bg-white rounded-[32px] p-8 border border-slate-200 shadow-sm">
-            <FileText className="text-orange-500" size={36} />
-            <h3 className="font-bold text-2xl mt-5">GST Professional</h3>
-            <p className="mt-3 text-slate-500">
-              Registration, Returns, E-Way Bills & Compliance.
-            </p>
-          </div>
-
-          {/* Income Tax */}
-          <div className="bg-slate-950 text-white rounded-[32px] p-8">
-            <Briefcase size={36} />
-            <h3 className="font-bold text-2xl mt-5">Income Tax</h3>
-            <p className="mt-3 text-slate-400">
-              Filing, TDS, Tax Planning & Business Taxation.
-            </p>
-          </div>
-
-          {/* Payroll */}
-          <div className="bg-white rounded-[32px] p-8 border border-slate-200">
-            <ShieldCheck className="text-blue-600" size={36} />
-            <h3 className="font-bold text-2xl mt-5">Payroll Management</h3>
-            <p className="mt-3 text-slate-500">
-              PF, ESI, Salary Processing & Compliance.
-            </p>
-          </div>
-
-          {/* Excel */}
-          <div className="bg-gradient-to-br from-emerald-500 to-green-600 text-white rounded-[32px] p-8">
-            <BarChart3 size={36} />
-            <h3 className="font-bold text-2xl mt-5">Advanced Excel</h3>
-            <p className="mt-3 text-green-100">
-              Dashboards, Pivot Tables, VLOOKUP & MIS Reporting.
-            </p>
-          </div>
-        </div>
+        )}
       </section>
 
-      {/* LEARNING JOURNEY */}
-      <section className="bg-white py-28">
-        <div className="max-w-5xl mx-auto px-6">
-          <h2 className="text-5xl font-bold text-center mb-20">
-            Learning Methodology
-          </h2>
-
-          <div className="space-y-10">
-            {methodology.map((item, index) => (
-              <div key={item} className="flex gap-6">
-                <div className="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold shrink-0">
-                  {index + 1}
-                </div>
-
-                <div>
-                  <h3 className="text-2xl font-semibold">{item}</h3>
-                  <p className="text-slate-500 mt-2">
-                    Practical and industry-oriented learning approach.
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* WHO CAN JOIN */}
-      <section className="py-28">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-5xl font-bold text-center mb-16">
-            Who Can Join?
-          </h2>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
-            {[
-              "Students",
-              "Graduates",
-              "Working Professionals",
-              "Entrepreneurs",
-              "Job Seekers",
-            ].map((item) => (
-              <div
-                key={item}
-                className="bg-white rounded-[28px] p-8 border border-slate-200 text-center hover:-translate-y-2 transition"
-              >
-                <h3 className="font-semibold text-lg">{item}</h3>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* PLACEMENT */}
-      <section className="mx-6 rounded-[40px] bg-slate-950 text-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-10 py-24">
-          <span className="text-blue-400 font-medium">
-            Placement Support
-          </span>
-
-          <h2 className="text-5xl font-bold mt-4 max-w-3xl">
-            We Don't Just Teach.
-            <br />
-            We Prepare You For Employment.
-          </h2>
-
-          <div className="grid md:grid-cols-5 gap-5 mt-14">
-            {[
-              "Resume Preparation",
-              "Mock Interviews",
-              "Soft Skills",
-              "Job Referrals",
-              "Career Counseling",
-            ].map((item) => (
-              <div
-                key={item}
-                className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[24px] p-6"
-              >
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CAREERS */}
-      <section className="py-28">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-5xl font-bold text-center mb-14">
-            Career Opportunities
-          </h2>
-
-          <div className="flex flex-wrap justify-center gap-4">
-            {careers.map((career) => (
-              <div
-                key={career}
-                className="px-6 py-3 rounded-full bg-white border border-slate-200 hover:bg-blue-600 hover:text-white transition"
-              >
-                {career}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* VALUES */}
-      <section className="bg-white py-28">
-        <div className="max-w-6xl mx-auto px-6 text-center">
-          <h2 className="text-5xl font-bold">Our Values</h2>
-
-          <div className="grid md:grid-cols-5 gap-6 mt-16">
-            {values.map((value) => (
-              <div key={value}>
-                <div className="h-32 rounded-[32px] bg-gradient-to-br from-blue-50 to-indigo-100 hover:scale-105 transition duration-300" />
-                <h3 className="mt-5 text-xl font-semibold">{value}</h3>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-28">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="rounded-[40px] bg-gradient-to-r from-blue-600 to-indigo-700 text-white text-center p-16">
-            <h2 className="text-5xl font-bold">
-              Start Your Accounting Career Today
-            </h2>
-
-            <p className="mt-5 text-blue-100 text-lg">
-              Practical learning, expert guidance, and placement support.
-            </p>
-
-            <button className="mt-8 bg-white text-blue-700 px-8 py-4 rounded-2xl font-semibold inline-flex items-center gap-2">
-              Enquire Now
-              <ArrowRight size={18} />
-            </button>
-          </div>
+      {/* Guarantee */}
+      <section className="py-16 bg-blue-50 border-t border-blue-100">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <Shield size={48} className="mx-auto text-blue-600 mb-6" />
+          <h2 className="text-3xl font-bold text-slate-900 mb-4">Secure & Quality Learning</h2>
+          <p className="text-lg text-slate-600">
+            All our payments are processed securely via Razorpay. Get instant access to high-quality recorded videos, PDF materials, and dedicated technical support after enrollment.
+          </p>
         </div>
       </section>
     </div>
   );
 }
-

@@ -1,138 +1,202 @@
-import React from "react";
-import {
-  Building2,
-  GraduationCap,
-  Target,
-  Eye,
-  Award,
-  Briefcase,
-  Users,
-  TrendingUp,
-  CheckCircle2,
-} from "lucide-react";
+import React, { useState, useEffect } from "react";
+import api from "../../utils/api";
+import { Users, Target, BookOpen, CheckCircle, Eye, TrendingUp, Award, Star } from "lucide-react";
 
 export default function About() {
-  const features = [
-    {
-      title: "Industry-Oriented Training",
-      description:
-        "Curriculum designed based on current industry requirements and employer expectations.",
-    },
-    {
-      title: "Practical Learning",
-      description:
-        "Work on real-time accounting records, GST filings, payroll systems, and business transactions.",
-    },
-    {
-      title: "Experienced Trainers",
-      description:
-        "Training delivered by accounting professionals with extensive industry experience.",
-    },
-    {
-      title: "Placement Assistance",
-      description:
-        "Support in finding employment opportunities across accounting, finance, taxation, and administration.",
-    },
-    {
-      title: "Updated Curriculum",
-      description:
-        "Courses updated regularly according to GST regulations, taxation laws, and accounting standards.",
-    },
-    {
-      title: "Career Development",
-      description:
-        "Resume building, interview preparation, communication skills, and professional guidance.",
-    },
-  ];
+  const [faculty, setFaculty] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const missions = [
-    "Deliver practical accounting education",
-    "Create industry-ready professionals",
-    "Provide affordable and quality training",
-    "Bridge the gap between theory and practice",
-    "Support career growth through placement assistance",
-    "Build confidence through hands-on learning",
-  ];
+  useEffect(() => {
+    const fetchFaculty = async () => {
+      try {
+        const res = await api.get("/faculty");
+        setFaculty(res.data.faculty);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFaculty();
+  }, []);
 
   return (
-    <div className="bg-slate-50 overflow-hidden">
-      {/* HERO */}
-      <section className="relative bg-slate-950 text-white">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-indigo-600/20 to-cyan-500/20" />
+    <div className="bg-[#FAFAF8] overflow-hidden font-['Inter',sans-serif]">
 
-        <div className="relative max-w-7xl mx-auto px-6 py-28">
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-xl">
-            <GraduationCap size={18} />
-            About GTC Education Academy
-          </span>
+      {/* ── HERO ── */}
+      <section className="relative text-white overflow-hidden" style={{ background: "linear-gradient(135deg, #0C1A3D 0%, #1e3a8a 50%, #0ea5e9 100%)", padding: "80px 0 120px" }}>
+        {/* Ambient blobs */}
+        <div className="absolute top-[-100px] right-[-100px] w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(14,165,233,0.25) 0%, transparent 70%)" }} />
+        <div className="absolute bottom-[-80px] left-[10%] w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%)" }} />
 
-          <h1 className="mt-8 text-5xl md:text-7xl font-bold leading-tight">
-            Learn.
-            <span className="text-blue-400"> Practice.</span>
-            <br />
-            Grow. Succeed.
-          </h1>
+        <div className="relative z-10 max-w-7xl mx-auto px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-10 items-center">
+            {/* Left */}
+            <div>
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-6 border" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(255,255,255,0.2)" }}>
+                <Star size={12} />
+                About GTC Education Academy
+              </span>
+              <h1 className="font-['Playfair_Display',serif] font-extrabold mb-6 leading-tight" style={{ fontSize: "clamp(36px,5vw,64px)" }}>
+                Shaping Tomorrow's<br />
+                <span className="text-sky-400">Finance</span> Leaders
+              </h1>
+              <p className="text-lg leading-relaxed mb-8 max-w-xl" style={{ color: "rgba(255,255,255,0.75)" }}>
+                Coimbatore's premier destination for practical accounting, taxation &amp; finance training — bridging classroom knowledge with real-world industry skills.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-amber-900" style={{ background: "linear-gradient(135deg,#fef3c7,#fde68a)", border: "1px solid #f59e0b" }}>
+                  <CheckCircle size={14} /> MSME Certified
+                </span>
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-amber-900" style={{ background: "linear-gradient(135deg,#fef3c7,#fde68a)", border: "1px solid #f59e0b" }}>
+                  <Award size={14} /> Industry-Recognized Courses
+                </span>
+              </div>
+            </div>
 
-          <p className="mt-8 text-xl text-slate-300 max-w-3xl">
-            Transforming students, graduates, and professionals into skilled
-            accounting and finance experts through practical, industry-focused
-            training.
-          </p>
+            {/* Right — floating stat cards */}
+            <div className="flex flex-col gap-4 min-w-[170px]">
+              <div className="text-center text-white rounded-2xl py-5 px-7" style={{ background: "linear-gradient(135deg,#0ea5e9,#6366f1)", boxShadow: "0 8px 30px rgba(14,165,233,0.4)" }}>
+                <div className="text-5xl font-black leading-none">500+</div>
+                <div className="text-xs mt-1 opacity-85">Students Placed</div>
+              </div>
+              <div className="text-center rounded-2xl py-5 px-7 border" style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(10px)", borderColor: "rgba(255,255,255,0.2)" }}>
+                <div className="text-5xl font-black leading-none text-amber-400">10+</div>
+                <div className="text-xs mt-1 opacity-85">Years of Excellence</div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* GTC SOLUTIONS */}
-      <section className="py-28">
-        <div className="max-w-7xl mx-auto px-6">
+      {/* Wave */}
+      <div style={{ background: "#0C1A3D", marginTop: "-1px", lineHeight: 0 }}>
+        <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" className="block w-full">
+          <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#FAFAF8" />
+        </svg>
+      </div>
+
+      {/* ── MISSION / VISION / WHY ── */}
+      <section className="py-20 max-w-7xl mx-auto px-8">
+        <div className="text-center mb-14">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-4" style={{ background: "rgba(14,165,233,0.1)", color: "#0ea5e9", border: "1px solid rgba(14,165,233,0.2)" }}>
+            Our Foundation
+          </span>
+          <h2 className="font-['Playfair_Display',serif] font-extrabold text-[#0C1A3D]" style={{ fontSize: "clamp(28px,4vw,44px)" }}>
+            What Drives Us Forward
+          </h2>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+          {/* Mission */}
+          <div className="bg-white rounded-3xl p-10 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+            <div className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl" style={{ background: "linear-gradient(90deg,#0ea5e9,#6366f1)" }} />
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-7" style={{ background: "#eff6ff" }}>
+              <Target size={28} className="text-sky-500" />
+            </div>
+            <h3 className="text-xl font-extrabold text-[#0C1A3D] mb-4">Our Mission</h3>
+            <p className="text-slate-500 leading-relaxed text-sm">
+              To bridge the gap between academic education and industry requirements by providing practical, real-world training that makes our students{" "}
+              <strong className="text-[#0C1A3D]">day-one job ready</strong> in finance and taxation.
+            </p>
+            <div className="mt-7 pt-6 border-t border-slate-100 flex flex-wrap gap-2">
+              <span className="text-xs bg-sky-50 text-sky-600 px-3 py-1 rounded-full font-semibold">Practical First</span>
+              <span className="text-xs bg-green-50 text-green-600 px-3 py-1 rounded-full font-semibold">Industry Aligned</span>
+            </div>
+          </div>
+
+          {/* Vision */}
+          <div className="bg-white rounded-3xl p-10 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+            <div className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl" style={{ background: "linear-gradient(90deg,#6366f1,#8b5cf6)" }} />
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-7" style={{ background: "#eef2ff" }}>
+              <Eye size={28} className="text-indigo-500" />
+            </div>
+            <h3 className="text-xl font-extrabold text-[#0C1A3D] mb-4">Our Vision</h3>
+            <p className="text-slate-500 leading-relaxed text-sm">
+              To be the <strong className="text-[#0C1A3D]">most trusted institution</strong> for professional skill development in South India — recognized for quality training, expert faculty, and exceptional placement records.
+            </p>
+            <div className="mt-7 pt-6 border-t border-slate-100 flex flex-wrap gap-2">
+              <span className="text-xs bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full font-semibold">Trusted Leader</span>
+              <span className="text-xs bg-orange-50 text-orange-600 px-3 py-1 rounded-full font-semibold">Excellence Driven</span>
+            </div>
+          </div>
+
+          {/* Why Us */}
+          <div className="rounded-3xl p-10 text-white relative overflow-hidden" style={{ background: "linear-gradient(135deg,#0C1A3D,#1e3a8a)" }}>
+            <div className="absolute top-[-40px] right-[-40px] w-36 h-36 rounded-full" style={{ background: "rgba(14,165,233,0.15)" }} />
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-7 relative z-10" style={{ background: "rgba(255,255,255,0.1)" }}>
+              <TrendingUp size={28} className="text-amber-400" />
+            </div>
+            <h3 className="text-xl font-extrabold mb-5 relative z-10">Why Choose GTC?</h3>
+            <ul className="space-y-3 relative z-10">
+              {[
+                "100% Practical, software-based training",
+                "Real business case studies & live projects",
+                "Dedicated placement assistance",
+                "Small batch sizes for personal attention",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2.5 text-sm" style={{ color: "rgba(255,255,255,0.85)" }}>
+                  <CheckCircle size={15} className="text-amber-400 mt-0.5 shrink-0" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FOUNDER ── */}
+      <section className="bg-white border-y border-slate-100 py-20">
+        <div className="max-w-7xl mx-auto px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <span className="text-blue-600 font-semibold uppercase tracking-wider">
-                Parent Organization
-              </span>
-
-              <h2 className="text-5xl font-bold mt-4 mb-8">
-                About GTC Solutions
-              </h2>
-
-              <p className="text-slate-600 leading-relaxed text-lg">
-                GTC Solutions is a professional accounting and business
-                consulting organization based in Coimbatore, Tamil Nadu. The
-                company specializes in accounting, taxation, GST compliance,
-                payroll management, bookkeeping, and financial advisory
-                services.
-              </p>
-
-              <p className="text-slate-600 leading-relaxed text-lg mt-6">
-                Serving businesses, startups, entrepreneurs, and professionals,
-                GTC Solutions focuses on delivering practical and reliable
-                financial solutions that support business growth and compliance.
-              </p>
+            {/* Image */}
+            <div className="relative">
+              <div className="absolute inset-0 rounded-3xl rotate-3 scale-105 opacity-20" style={{ background: "linear-gradient(135deg,#0ea5e9,#6366f1)" }} />
+              <div className="relative rounded-3xl overflow-hidden h-[480px]">
+                <img
+                  src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=2000"
+                  alt="Founder Mr. Ganesh Kumar"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(12,26,61,0.6), transparent)" }} />
+                <div className="absolute bottom-6 left-6">
+                  <div className="bg-white rounded-2xl px-5 py-4 inline-flex items-center gap-3 shadow-xl">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white" style={{ background: "linear-gradient(135deg,#0ea5e9,#6366f1)" }}>
+                      <Award size={18} />
+                    </div>
+                    <div>
+                      <div className="font-extrabold text-sm text-[#0C1A3D]">Mr. Ganesh Kumar</div>
+                      <div className="text-xs font-semibold text-sky-500">Founder &amp; Chief Trainer</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="bg-white rounded-[40px] p-10 shadow-xl border border-slate-100">
-              <Building2 size={50} className="text-blue-600" />
-
-              <h3 className="text-3xl font-bold mt-6">
-                Professional Accounting & Consulting
-              </h3>
-
-              <p className="text-slate-500 mt-4">
-                Based in Kurumbapalayam, Coimbatore, serving businesses with
-                accounting, taxation, compliance, payroll, and advisory
-                services.
-              </p>
-
-              <div className="grid grid-cols-2 gap-4 mt-8">
-                <div className="bg-slate-50 rounded-2xl p-4">
-                  <h4 className="font-bold text-2xl">100%</h4>
-                  <p className="text-slate-500 text-sm">
-                    Practical Approach
-                  </p>
+            {/* Content */}
+            <div>
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-5" style={{ background: "rgba(14,165,233,0.1)", color: "#0ea5e9", border: "1px solid rgba(14,165,233,0.2)" }}>
+                Founder's Message
+              </span>
+              <h2 className="font-['Playfair_Display',serif] font-extrabold text-[#0C1A3D] mb-8 leading-snug" style={{ fontSize: "clamp(26px,3.5vw,40px)" }}>
+                Building the Future of Finance Professionals
+              </h2>
+              <div className="border-l-4 border-sky-400 pl-6 space-y-4">
+                <p className="text-slate-500 leading-[1.9] text-[15.5px]">
+                  "When we started GTC Solutions, we noticed a significant gap between what students learn in colleges and what companies actually expect. Many graduates struggle with real-world accounting tasks, GST filing, or practical software operations."
+                </p>
+                <p className="text-slate-500 leading-[1.9] text-[15.5px]">
+                  "GTC Education Academy was born from this necessity. Our goal is not just to teach, but to{" "}
+                  <strong className="text-[#0C1A3D]">train with purpose</strong>. When our students walk into an interview, they don't just carry a certificate — they carry the confidence and skills to perform from day one."
+                </p>
+              </div>
+              <div className="mt-9 pt-7 border-t border-slate-100 flex items-center gap-5">
+                <div className="w-13 h-13 rounded-2xl flex items-center justify-center" style={{ background: "linear-gradient(135deg,#eff6ff,#eef2ff)" }}>
+                  <BookOpen size={24} className="text-indigo-500" />
                 </div>
-
-                <div className="bg-slate-50 rounded-2xl p-4">
-                  <h4 className="font-bold text-2xl">Industry</h4>
-                  <p className="text-slate-500 text-sm">Focused Services</p>
+                <div>
+                  <div className="font-extrabold text-[#0C1A3D]">10+ Years of Training Excellence</div>
+                  <div className="text-xs text-slate-400 mt-0.5">Former CA Firm Associate · GST Practitioner · Tally Expert</div>
                 </div>
               </div>
             </div>
@@ -140,163 +204,91 @@ export default function About() {
         </div>
       </section>
 
-      {/* ACADEMY SECTION */}
-      <section className="bg-white py-28">
-        <div className="max-w-6xl mx-auto px-6 text-center">
-          <span className="text-blue-600 font-semibold uppercase tracking-wider">
-            GTC Education Academy
-          </span>
-
-          <h2 className="text-5xl font-bold mt-4">
-            Bridging the Gap Between
-            <br />
-            Education and Industry
-          </h2>
-
-          <p className="mt-8 text-lg text-slate-600 max-w-4xl mx-auto leading-relaxed">
-            Established as the training and skill-development division of GTC
-            Solutions, the academy focuses on transforming students into
-            industry-ready accounting professionals through hands-on practical
-            learning, real business projects, GST compliance training, taxation
-            procedures, payroll management, and modern accounting software.
-          </p>
-        </div>
-      </section>
-
-      {/* VISION & MISSION */}
-      <section className="py-28">
-        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-8">
-          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-[40px] p-10">
-            <Eye size={42} />
-
-            <h3 className="text-3xl font-bold mt-6">Our Vision</h3>
-
-            <p className="mt-6 text-blue-100 text-lg leading-relaxed">
-              To become the most trusted accounting and finance training academy
-              in South India by developing skilled professionals who contribute
-              effectively to businesses, industries, and the economy.
+      {/* ── FACULTY ── */}
+      <section className="py-20 bg-[#FAFAF8]">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="text-center mb-14">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-4" style={{ background: "rgba(14,165,233,0.1)", color: "#0ea5e9", border: "1px solid rgba(14,165,233,0.2)" }}>
+              <Users size={12} /> Our Expert Team
+            </span>
+            <h2 className="font-['Playfair_Display',serif] font-extrabold text-[#0C1A3D] mb-4" style={{ fontSize: "clamp(28px,4vw,44px)" }}>
+              Learn from the Best
+            </h2>
+            <p className="text-slate-500 text-base max-w-lg mx-auto leading-relaxed">
+              Our trainers are industry professionals who bring real CA firm experience directly into your training session.
             </p>
           </div>
 
-          <div className="bg-slate-950 text-white rounded-[40px] p-10">
-            <Target size={42} />
-
-            <h3 className="text-3xl font-bold mt-6">Our Mission</h3>
-
-            <div className="space-y-4 mt-8">
-              {missions.map((item) => (
-                <div key={item} className="flex gap-3">
-                  <CheckCircle2
-                    size={20}
-                    className="text-green-400 mt-1"
-                  />
-                  <span>{item}</span>
+          {loading ? (
+            <div className="flex justify-center py-16">
+              <div className="w-10 h-10 border-4 border-sky-500 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {faculty.map((f) => (
+                <div
+                  key={f._id}
+                  className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm group transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl"
+                >
+                  {/* Animated accent bar */}
+                  <div className="h-1 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-t" style={{ background: "linear-gradient(90deg,#0ea5e9,#6366f1)" }} />
+                  {/* Photo */}
+                  <div className="h-56 bg-gradient-to-br from-blue-50 to-indigo-100 relative overflow-hidden">
+                    {f.photoUrl ? (
+                      <img
+                        src={`http://localhost:8080${f.photoUrl}`}
+                        alt={f.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Users size={64} className="text-blue-200" />
+                      </div>
+                    )}
+                  </div>
+                  {/* Info */}
+                  <div className="p-6">
+                    <h3 className="text-[17px] font-extrabold text-[#0C1A3D] mb-1">{f.name}</h3>
+                    <p className="text-sky-500 font-semibold text-sm mb-4">{f.designation}</p>
+                    <div className="space-y-2 text-sm text-slate-500">
+                      <p className="flex items-start gap-2">
+                        <CheckCircle size={14} className="text-green-500 mt-0.5 shrink-0" />
+                        <span>{f.qualification}</span>
+                      </p>
+                      <p className="flex items-start gap-2">
+                        <CheckCircle size={14} className="text-green-500 mt-0.5 shrink-0" />
+                        <span>{f.experience}</span>
+                      </p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
-          </div>
+          )}
         </div>
       </section>
 
-      {/* WHY CHOOSE US */}
-      <section className="bg-white py-28">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <span className="text-blue-600 font-semibold uppercase tracking-wider">
-              Why Choose Us
-            </span>
-
-            <h2 className="text-5xl font-bold mt-4">
-              Why Students Choose GTC
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="group bg-slate-50 hover:bg-white border border-slate-200 rounded-[32px] p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
-              >
-                <Award
-                  className="text-blue-600 mb-5 group-hover:scale-110 transition"
-                  size={34}
-                />
-
-                <h3 className="text-xl font-bold mb-4">
-                  {feature.title}
-                </h3>
-
-                <p className="text-slate-600 leading-relaxed">
-                  {feature.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* VALUES */}
-      <section className="py-28">
-        <div className="max-w-6xl mx-auto px-6 text-center">
-          <span className="text-blue-600 font-semibold uppercase tracking-wider">
-            Our Strength
-          </span>
-
-          <h2 className="text-5xl font-bold mt-4">
-            Built on Professional Values
-          </h2>
-
-          <div className="grid md:grid-cols-4 gap-6 mt-16">
+      {/* ── STATS ── */}
+      <section className="py-16 relative overflow-hidden" style={{ background: "linear-gradient(135deg,#0C1A3D 0%,#1e3a8a 60%,#0ea5e9 100%)" }}>
+        <div className="absolute top-[-60px] right-[-60px] w-72 h-72 rounded-full pointer-events-none" style={{ background: "rgba(14,165,233,0.1)" }} />
+        <div className="absolute bottom-[-80px] left-[-40px] w-64 h-64 rounded-full pointer-events-none" style={{ background: "rgba(245,158,11,0.08)" }} />
+        <div className="relative z-10 max-w-7xl mx-auto px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/20">
             {[
-              {
-                icon: <Briefcase size={28} />,
-                title: "Professionalism",
-              },
-              {
-                icon: <Users size={28} />,
-                title: "Student Success",
-              },
-              {
-                icon: <TrendingUp size={28} />,
-                title: "Continuous Growth",
-              },
-              {
-                icon: <Award size={28} />,
-                title: "Excellence",
-              },
-            ].map((item, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-[32px] p-8 shadow-lg border border-slate-100"
-              >
-                <div className="text-blue-600 mb-5">{item.icon}</div>
-
-                <h3 className="font-bold text-xl">{item.title}</h3>
+              { val: "10+", label: "Years Experience", color: "text-white" },
+              { val: "500+", label: "Students Placed", color: "text-amber-400" },
+              { val: "15+", label: "Expert Courses", color: "text-white" },
+              { val: "100%", label: "Practical Training", color: "text-emerald-400" },
+            ].map(({ val, label, color }) => (
+              <div key={label} className="text-center px-6 py-4">
+                <div className={`font-black leading-none mb-2 ${color}`} style={{ fontSize: "clamp(32px,5vw,56px)" }}>{val}</div>
+                <div className="text-xs font-bold tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.6)" }}>{label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="pb-24">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="rounded-[40px] bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-16 text-center">
-            <h2 className="text-5xl font-bold">
-              Start Your Professional Journey
-            </h2>
-
-            <p className="mt-6 text-blue-100 text-lg">
-              Gain practical accounting skills, industry knowledge, and career
-              support to become a successful finance professional.
-            </p>
-
-            <button className="mt-8 px-8 py-4 bg-white text-blue-700 font-semibold rounded-2xl hover:scale-105 transition">
-              Enquire Now
-            </button>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
