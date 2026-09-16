@@ -6,6 +6,7 @@ import Home from "../pages/Home";
 import About from "../pages/About";
 import Course from "../pages/Course";
 import Contact from "../pages/Contact";
+import WhyChooseUs from "../pages/WhyChooseUs";
 import FAQ from "../pages/FAQ";
 import PrivacyPolicy from "../pages/Privacy";
 import TermsConditions from "../pages/TermsConditions";
@@ -53,6 +54,7 @@ export default function AppRoutes() {
       <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
       <Route path="/course" element={<PublicLayout><Course /></PublicLayout>} />
       <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
+      <Route path="/why-choose-us" element={<PublicLayout><WhyChooseUs /></PublicLayout>} />
       <Route path="/faq" element={<PublicLayout><FAQ /></PublicLayout>} />
       <Route path="/privacy" element={<PublicLayout><PrivacyPolicy /></PublicLayout>} />
       <Route path="/terms" element={<PublicLayout><TermsConditions /></PublicLayout>} />

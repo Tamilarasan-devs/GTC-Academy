@@ -24,31 +24,31 @@ export default function About() {
     <div className="bg-[#FAFAF8] overflow-hidden font-['Inter',sans-serif]">
 
       {/* ── HERO ── */}
-      <section className="relative text-white overflow-hidden" style={{ background: "linear-gradient(135deg, #0C1A3D 0%, #1e3a8a 50%, #0ea5e9 100%)", padding: "80px 0 120px" }}>
+      <section className="relative text-white overflow-hidden pt-28 pb-20" style={{ background: "linear-gradient(135deg, #071344 0%, #0b1e69 60%, #162a80 100%)" }}>
         {/* Ambient blobs */}
-        <div className="absolute top-[-100px] right-[-100px] w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(14,165,233,0.25) 0%, transparent 70%)" }} />
-        <div className="absolute bottom-[-80px] left-[10%] w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%)" }} />
+        <div className="absolute top-[-100px] right-[-100px] w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(229,99,1,0.2) 0%, transparent 70%)" }} />
+        <div className="absolute bottom-[-80px] left-[10%] w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(229,99,1,0.15) 0%, transparent 70%)" }} />
 
         <div className="relative z-10 max-w-7xl mx-auto px-8">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-10 items-center">
             {/* Left */}
             <div>
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-6 border" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(255,255,255,0.2)" }}>
-                <Star size={12} />
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-6 border" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(229,99,1,0.4)" }}>
+                <Star size={12} className="text-[#e56301]" />
                 About GTC Education Academy
               </span>
-              <h1 className="font-['Playfair_Display',serif] font-extrabold mb-6 leading-tight" style={{ fontSize: "clamp(36px,5vw,64px)" }}>
+              <h1 className="font-sans font-extrabold mb-6 leading-tight" style={{ fontSize: "clamp(36px,5vw,64px)" }}>
                 Shaping Tomorrow's<br />
-                <span className="text-sky-400">Finance</span> Leaders
+                <span className="text-[#e56301]">Finance &amp; Skill</span> Leaders
               </h1>
-              <p className="text-lg leading-relaxed mb-8 max-w-xl" style={{ color: "rgba(255,255,255,0.75)" }}>
-                Coimbatore's premier destination for practical accounting, taxation &amp; finance training — bridging classroom knowledge with real-world industry skills.
+              <p className="text-lg leading-relaxed mb-8 max-w-xl" style={{ color: "rgba(255,255,255,0.8)" }}>
+                Premier destination for practical accounting, taxation &amp; skill training — bridging classroom knowledge with real-world industry skills.
               </p>
               <div className="flex flex-wrap gap-3">
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-amber-900" style={{ background: "linear-gradient(135deg,#fef3c7,#fde68a)", border: "1px solid #f59e0b" }}>
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#e56301]">
                   <CheckCircle size={14} /> MSME Certified
                 </span>
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-amber-900" style={{ background: "linear-gradient(135deg,#fef3c7,#fde68a)", border: "1px solid #f59e0b" }}>
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#e56301]">
                   <Award size={14} /> Industry-Recognized Courses
                 </span>
               </div>
@@ -56,8 +56,8 @@ export default function About() {
 
             {/* Right — floating stat cards */}
             <div className="flex flex-col gap-4 min-w-[170px]">
-              <div className="text-center text-white rounded-2xl py-5 px-7" style={{ background: "linear-gradient(135deg,#0ea5e9,#6366f1)", boxShadow: "0 8px 30px rgba(14,165,233,0.4)" }}>
-                <div className="text-5xl font-black leading-none">500+</div>
+              <div className="text-center text-white rounded-2xl py-5 px-7" style={{ background: "linear-gradient(135deg,#e56301,#c75400)", boxShadow: "0 8px 30px rgba(229,99,1,0.4)" }}>
+                <div className="text-5xl font-black leading-none">50+</div>
                 <div className="text-xs mt-1 opacity-85">Students Placed</div>
               </div>
               <div className="text-center rounded-2xl py-5 px-7 border" style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(10px)", borderColor: "rgba(255,255,255,0.2)" }}>

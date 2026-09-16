@@ -36,52 +36,53 @@ export default function ManageEnrollments() {
   if (loading) return <div className="flex items-center justify-center h-64"><div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" /></div>;
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold text-slate-900">Manage Enrollments ({enrollments.length})</h1>
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Manage Enrollments <span className="text-slate-400 text-lg font-medium">({enrollments.length})</span></h1>
       </div>
 
-      <div className="bg-white rounded-2xl border overflow-hidden">
+      <div className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full text-left">
             <thead>
-              <tr className="bg-slate-50 border-b">
-                <th className="text-left px-6 py-4 text-sm font-semibold text-slate-600">Student</th>
-                <th className="text-left px-6 py-4 text-sm font-semibold text-slate-600">Course</th>
-                <th className="text-left px-6 py-4 text-sm font-semibold text-slate-600">Progress</th>
-                <th className="text-left px-6 py-4 text-sm font-semibold text-slate-600">Status</th>
-                <th className="text-left px-6 py-4 text-sm font-semibold text-slate-600">Expiry</th>
-                <th className="text-left px-6 py-4 text-sm font-semibold text-slate-600">Actions</th>
+              <tr className="bg-slate-50/80 border-b border-slate-100">
+                <th className="px-6 py-5 text-xs font-bold text-slate-500 uppercase tracking-wider">Student</th>
+                <th className="px-6 py-5 text-xs font-bold text-slate-500 uppercase tracking-wider">Course</th>
+                <th className="px-6 py-5 text-xs font-bold text-slate-500 uppercase tracking-wider">Progress</th>
+                <th className="px-6 py-5 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-5 text-xs font-bold text-slate-500 uppercase tracking-wider">Expiry</th>
+                <th className="px-6 py-5 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100">
               {enrollments.map((enrollment) => {
                 const expired = new Date() > new Date(enrollment.expiryDate);
                 return (
-                  <tr key={enrollment._id} className="border-b border-slate-100 hover:bg-slate-50">
-                    <td className="px-6 py-4">
-                      <p className="font-semibold text-slate-900">{enrollment.studentId?.name}</p>
-                      <p className="text-xs text-slate-500">{enrollment.studentId?.email}</p>
+                  <tr key={enrollment._id} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-5">
+                      <p className="font-bold text-slate-900">{enrollment.studentId?.name}</p>
+                      <p className="text-xs font-medium text-slate-500 mt-0.5">{enrollment.studentId?.email}</p>
                     </td>
-                    <td className="px-6 py-4 font-medium text-slate-800">{enrollment.courseId?.title}</td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <div className="w-16 h-1.5 bg-slate-100 rounded-full">
-                          <div className="h-1.5 bg-blue-600 rounded-full" style={{ width: `${enrollment.progress?.percentage || 0}%` }} />
+                    <td className="px-6 py-5 font-bold text-slate-800">{enrollment.courseId?.title}</td>
+                    <td className="px-6 py-5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+                          <div className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" style={{ width: `${enrollment.progress?.percentage || 0}%` }} />
                         </div>
-                        <span className="text-xs font-semibold">{enrollment.progress?.percentage || 0}%</span>
+                        <span className="text-xs font-bold text-slate-600">{enrollment.progress?.percentage || 0}%</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className={`px-3 py-1 rounded-lg text-xs font-semibold ${enrollment.isActive ? (expired ? "bg-amber-100 text-amber-700" : "bg-green-100 text-green-700") : "bg-red-100 text-red-700"}`}>
+                    <td className="px-6 py-5">
+                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${enrollment.isActive ? (expired ? "bg-amber-50 text-amber-700" : "bg-green-50 text-green-700") : "bg-red-50 text-red-700"}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${enrollment.isActive ? (expired ? "bg-amber-500" : "bg-green-500") : "bg-red-500"}`}></span>
                         {!enrollment.isActive ? "Revoked" : expired ? "Expired" : "Active"}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-slate-500">{new Date(enrollment.expiryDate).toLocaleDateString()}</td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <button onClick={() => handleExtend(enrollment._id)} className="p-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition" title="Extend Validity"><CalendarDays size={16} /></button>
-                        {enrollment.isActive && <button onClick={() => handleRevoke(enrollment._id)} className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition" title="Revoke Access"><Clock size={16} /></button>}
+                    <td className="px-6 py-5 text-sm font-medium text-slate-500">{new Date(enrollment.expiryDate).toLocaleDateString()}</td>
+                    <td className="px-6 py-5">
+                      <div className="flex items-center justify-end gap-2">
+                        <button onClick={() => handleExtend(enrollment._id)} className="p-2.5 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 hover:text-blue-700 transition font-medium flex items-center gap-1.5 text-xs" title="Extend Validity"><CalendarDays size={16} /> Extend</button>
+                        {enrollment.isActive && <button onClick={() => handleRevoke(enrollment._id)} className="p-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 hover:text-red-700 transition font-medium flex items-center gap-1.5 text-xs" title="Revoke Access"><Clock size={16} /> Revoke</button>}
                       </div>
                     </td>
                   </tr>

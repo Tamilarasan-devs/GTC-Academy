@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import api from "../../utils/api";
 import { useAuth } from "../../context/AuthContext";
-import { BookOpen, CheckCircle2, Clock, PlayCircle, Shield, ArrowRight } from "lucide-react";
+import { BookOpen, CheckCircle2, Clock, Shield, ArrowRight, Search, TrendingUp, Award } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Course() {
   const [courses, setCourses] = useState([]);
   const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -19,7 +20,6 @@ export default function Course() {
         const publishedCourses = res.data.courses.filter(c => c.isPublished);
         setCourses(publishedCourses);
 
-        // Extract unique categories
         const uniqueCategories = ["All", ...new Set(publishedCourses.map(c => c.category))];
         setCategories(uniqueCategories);
       } catch (err) {
@@ -65,7 +65,7 @@ export default function Course() {
           email: user.email,
           contact: user.phone,
         },
-        theme: { color: "#2563EB" },
+        theme: { color: "#e56301" },
       };
 
       const rzp = new window.Razorpay(options);
@@ -75,119 +75,194 @@ export default function Course() {
     }
   };
 
-  const filteredCourses = activeCategory === "All" ? courses : courses.filter(c => c.category === activeCategory);
+  const filteredCourses = courses.filter(c => {
+    const matchesCategory = activeCategory === "All" || c.category === activeCategory;
+    const matchesSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   return (
-    <div className="bg-slate-50 min-h-screen">
-      {/* Hero */}
-      <section className="bg-slate-950 text-white py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 to-transparent" />
-        <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">Our <span className="text-blue-400">Courses</span></h1>
-          <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-            Choose from our wide range of professional courses and take the next step in your career.
-          </p>
+    <div className="bg-slate-50 min-h-screen font-sans pb-20">
+      {/* Sleek Hero / Catalog Header */}
+      <section className="bg-white border-b border-slate-200 pt-32 pb-16">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div className="max-w-2xl">
+            <span className="text-[#e56301] font-bold tracking-widest uppercase text-xs mb-4 block">Course Catalog</span>
+            <h1 className="text-4xl md:text-5xl font-extrabold text-[#0b1e69] leading-tight mb-4">
+              Master the Skills <br /> That Matter.
+            </h1>
+            <p className="text-lg text-slate-500 leading-relaxed">
+              Explore our premium selection of finance, taxation, and business software programs designed for real-world application.
+            </p>
+          </div>
+          
+          {/* Search Bar */}
+          <div className="relative w-full md:w-80">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Search size={18} className="text-slate-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search courses..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#0b1e69]/20 focus:border-[#0b1e69] outline-none text-sm transition-all"
+            />
+          </div>
         </div>
       </section>
 
-      {/* Category Filter */}
-      <section className="max-w-7xl mx-auto px-6 py-12">
-        <div className="flex flex-wrap justify-center gap-4 mb-16">
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
-                activeCategory === cat
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
-                  : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+      {/* Modern Category Tabs */}
+      <section className="bg-white sticky top-[73px] z-30 border-b border-slate-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex overflow-x-auto hide-scrollbar gap-8">
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`py-4 text-sm font-semibold whitespace-nowrap transition-colors relative ${
+                  activeCategory === cat
+                    ? "text-[#0b1e69]"
+                    : "text-slate-500 hover:text-slate-800"
+                }`}
+              >
+                {cat}
+                {activeCategory === cat && (
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0b1e69] rounded-t-full" />
+                )}
+              </button>
+            ))}
+          </div>
         </div>
+      </section>
 
+      {/* Courses Grid */}
+      <section className="max-w-7xl mx-auto px-6 py-16">
         {loading ? (
-          <div className="flex justify-center"><div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" /></div>
+          <div className="flex justify-center py-20">
+            <div className="w-10 h-10 border-4 border-[#0b1e69] border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : filteredCourses.length === 0 ? (
+          <div className="text-center py-20">
+            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <BookOpen size={24} className="text-slate-400" />
+            </div>
+            <h3 className="text-xl font-bold text-[#0b1e69] mb-2">No courses found</h3>
+            <p className="text-slate-500">Try adjusting your search or category filter.</p>
+          </div>
         ) : (
-          <div className="space-y-12">
-            {categories.filter(c => c !== "All").map(category => {
-              if (activeCategory !== "All" && activeCategory !== category) return null;
-              const categoryCourses = courses.filter(c => c.category === category);
-              if (categoryCourses.length === 0) return null;
-
-              return (
-                <div key={category} className="mb-16">
-                  <h2 className="text-3xl font-bold text-slate-900 mb-8 flex items-center gap-4">
-                    <span className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center"><BookOpen size={16} className="text-blue-600"/></span>
-                    {category}
-                  </h2>
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {categoryCourses.map(course => (
-                      <div key={course._id} className="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group">
-                        <div className="h-56 bg-slate-100 relative overflow-hidden">
-                          {course.thumbnailUrl ? (
-                            <img src={`http://localhost:8080${course.thumbnailUrl}`} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                          ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
-                              <BookOpen size={48} className="text-white/20" />
-                            </div>
-                          )}
-                          <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl font-bold text-slate-900 shadow-sm flex items-center gap-1">
-                            <Clock size={14} className="text-blue-600"/> {course.validity} Days
-                          </div>
-                        </div>
-
-                        <div className="p-8 flex-1 flex flex-col">
-                          <h3 className="text-2xl font-bold text-slate-900 mb-3">{course.title}</h3>
-                          <p className="text-slate-600 mb-6 flex-1">{course.shortDescription}</p>
-
-                          <div className="space-y-3 mb-8">
-                            {course.features?.slice(0, 4).map((f, i) => (
-                              <p key={i} className="flex items-start gap-2 text-sm text-slate-700">
-                                <CheckCircle2 size={16} className="text-green-500 shrink-0 mt-0.5" />
-                                {f}
-                              </p>
-                            ))}
-                          </div>
-
-                          <div className="pt-6 border-t border-slate-100 mt-auto">
-                            <div className="flex items-end justify-between mb-6">
-                              <div>
-                                <p className="text-sm text-slate-500 font-medium mb-1">Course Fee</p>
-                                <div className="flex items-baseline gap-2">
-                                  <span className="text-3xl font-bold text-slate-900">₹{course.discountPrice || course.price}</span>
-                                  {course.discountPrice && <span className="text-lg text-slate-400 line-through">₹{course.price}</span>}
-                                </div>
-                              </div>
-                            </div>
-                            <button
-                              onClick={() => handleEnroll(course._id)}
-                              className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-lg transition-all shadow-lg shadow-blue-600/25 flex items-center justify-center gap-2"
-                            >
-                              Enroll Now <ArrowRight size={20} />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredCourses.map(course => (
+              <div
+                key={course._id}
+                className="group bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col"
+              >
+                {/* Course Image */}
+                <div className="h-52 bg-slate-100 relative overflow-hidden">
+                  {course.thumbnailUrl ? (
+                    <img
+                      src={`http://localhost:8080${course.thumbnailUrl}`}
+                      alt={course.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                      <BookOpen size={40} className="text-slate-300" />
+                    </div>
+                  )}
+                  {/* Premium Badge */}
+                  <div className="absolute top-4 left-4 bg-white/95 backdrop-blur shadow-sm px-2.5 py-1 rounded-md flex items-center gap-1.5 border border-slate-200/50">
+                    <TrendingUp size={12} className="text-[#e56301]" />
+                    <span className="text-[10px] font-bold text-slate-800 uppercase tracking-widest">
+                      {course.category}
+                    </span>
                   </div>
                 </div>
-              );
-            })}
+
+                {/* Course Content */}
+                <div className="p-7 flex-1 flex flex-col">
+                  <div className="flex items-center gap-3 text-xs font-semibold text-slate-500 mb-3">
+                    <span className="flex items-center gap-1">
+                      <Clock size={14} className="text-slate-400" /> {course.validity} Days
+                    </span>
+                    <span className="w-1 h-1 rounded-full bg-slate-300" />
+                    <span className="flex items-center gap-1">
+                      <Award size={14} className="text-slate-400" /> Certificate
+                    </span>
+                  </div>
+
+                  <h3 className="text-xl font-bold text-[#0b1e69] leading-snug mb-3 group-hover:text-[#e56301] transition-colors">
+                    {course.title}
+                  </h3>
+                  <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-1 line-clamp-3">
+                    {course.shortDescription}
+                  </p>
+
+                  {/* Refined Features List */}
+                  <div className="space-y-2.5 mb-8">
+                    {course.features?.slice(0, 3).map((f, i) => (
+                      <p key={i} className="flex items-start gap-2.5 text-sm text-slate-700">
+                        <CheckCircle2 size={16} className="text-emerald-500 shrink-0 mt-0.5" />
+                        <span className="leading-tight">{f}</span>
+                      </p>
+                    ))}
+                    {course.features?.length > 3 && (
+                      <p className="text-xs font-semibold text-slate-400 pl-6 pt-1">
+                        + {course.features.length - 3} more modules
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Footer & CTA */}
+                  <div className="pt-5 border-t border-slate-100 flex items-center justify-between mt-auto">
+                    <div>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-2xl font-extrabold text-[#0b1e69]">
+                          ₹{course.discountPrice || course.price}
+                        </span>
+                        {course.discountPrice && (
+                          <span className="text-sm text-slate-400 line-through font-medium">₹{course.price}</span>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleEnroll(course._id)}
+                      className="px-5 py-2.5 bg-white border-2 border-[#0b1e69] text-[#0b1e69] hover:bg-[#0b1e69] hover:text-white rounded-lg font-bold text-sm transition-all flex items-center gap-2 group/btn"
+                    >
+                      Enroll <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </section>
 
-      {/* Guarantee */}
-      <section className="py-16 bg-blue-50 border-t border-blue-100">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <Shield size={48} className="mx-auto text-blue-600 mb-6" />
-          <h2 className="text-3xl font-bold text-slate-900 mb-4">Secure & Quality Learning</h2>
-          <p className="text-lg text-slate-600">
-            All our payments are processed securely via Razorpay. Get instant access to high-quality recorded videos, PDF materials, and dedicated technical support after enrollment.
-          </p>
+      {/* Premium Trust Banner */}
+      <section className="max-w-7xl mx-auto px-6">
+        <div className="bg-[#071344] rounded-3xl p-10 md:p-14 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-10 shadow-2xl">
+          <div className="absolute inset-0">
+            <div className="absolute right-0 top-0 w-[400px] h-[400px] bg-[#e56301]/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3" />
+          </div>
+          
+          <div className="relative z-10 max-w-xl text-center md:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-emerald-400 text-xs font-bold tracking-widest uppercase mb-4 border border-white/10">
+              <Shield size={14} /> 100% Secure Checkout
+            </div>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
+              Invest in your career with complete confidence.
+            </h2>
+            <p className="text-slate-300 text-lg leading-relaxed">
+              Get instant lifetime access to recorded sessions, practical materials, and premium support immediately upon enrollment.
+            </p>
+          </div>
+          
+          <div className="relative z-10 shrink-0">
+            <div className="w-24 h-24 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 shadow-[0_0_40px_rgba(229,99,1,0.2)]">
+              <CheckCircle2 size={40} className="text-[#e56301]" />
+            </div>
+          </div>
         </div>
       </section>
     </div>

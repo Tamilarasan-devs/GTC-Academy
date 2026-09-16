@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../../../utils/api";
-import { Plus, Edit, Trash2, Upload, FileText, Film, ChevronLeft } from "lucide-react";
+import { Plus, Edit, Trash2, Upload, FileText, Film, ChevronLeft, BookOpen } from "lucide-react";
 
 export default function ManageChapters() {
   const { courseId } = useParams();
@@ -56,77 +56,87 @@ export default function ManageChapters() {
   if (loading) return <div className="flex items-center justify-center h-64"><div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" /></div>;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Link to="/admin/courses" className="p-2 hover:bg-slate-100 rounded-lg"><ChevronLeft size={20} /></Link>
-        <h1 className="text-2xl font-bold text-slate-900 flex-1">Manage Chapters ({chapters.length})</h1>
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+        <div className="flex items-center gap-4">
+          <Link to="/admin/courses" className="p-2 hover:bg-slate-100 rounded-xl transition"><ChevronLeft size={20} /></Link>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Manage Chapters <span className="text-slate-400 text-lg font-medium">({chapters.length})</span></h1>
+        </div>
         <button onClick={() => { setEditing(null); setForm({ title: "", duration: "", order: chapters.length, isFree: false }); setShowForm(true); }}
-          className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition">
+          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#e56301] to-[#ff8c3a] text-white rounded-xl font-bold shadow-lg shadow-orange-500/20 hover:scale-105 transition-all">
           <Plus size={18} /> Add Chapter
         </button>
       </div>
 
       {showForm && (
-        <div className="bg-white rounded-2xl p-6 border">
-          <h3 className="font-bold mb-4">{editing ? "Edit Chapter" : "Add Chapter"}</h3>
+        <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.06)] transform transition-all duration-300">
+          <h3 className="text-xl font-bold mb-6 text-slate-900">{editing ? "Edit Chapter" : "Add New Chapter"}</h3>
           <form onSubmit={handleSubmit} className="flex flex-wrap gap-4 items-end">
             <div className="flex-1 min-w-[200px]">
-              <label className="text-sm font-medium text-slate-700 block mb-1">Title</label>
+              <label className="text-sm font-semibold text-slate-700 block mb-2">Title</label>
               <input type="text" value={form.title} onChange={e => setForm({...form, title: e.target.value})} required
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                className="w-full px-5 py-3.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e56301] bg-slate-50 focus:bg-white transition" />
             </div>
             <div className="w-32">
-              <label className="text-sm font-medium text-slate-700 block mb-1">Duration</label>
+              <label className="text-sm font-semibold text-slate-700 block mb-2">Duration</label>
               <input type="text" value={form.duration} onChange={e => setForm({...form, duration: e.target.value})} placeholder="e.g. 15 min"
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                className="w-full px-5 py-3.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e56301] bg-slate-50 focus:bg-white transition" />
             </div>
             <div className="w-24">
-              <label className="text-sm font-medium text-slate-700 block mb-1">Order</label>
+              <label className="text-sm font-semibold text-slate-700 block mb-2">Order</label>
               <input type="number" value={form.order} onChange={e => setForm({...form, order: parseInt(e.target.value)})}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                className="w-full px-5 py-3.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e56301] bg-slate-50 focus:bg-white transition" />
             </div>
-            <label className="flex items-center gap-2 pb-3">
-              <input type="checkbox" checked={form.isFree} onChange={e => setForm({...form, isFree: e.target.checked})} className="w-4 h-4" />
-              <span className="text-sm">Free Preview</span>
+            <label className="flex items-center gap-2 pb-4 cursor-pointer">
+              <input type="checkbox" checked={form.isFree} onChange={e => setForm({...form, isFree: e.target.checked})} className="w-5 h-5 rounded text-[#e56301] focus:ring-[#e56301]" />
+              <span className="text-sm font-semibold text-slate-700">Free Preview</span>
             </label>
-            <button type="submit" className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700">Save</button>
-            <button type="button" onClick={() => setShowForm(false)} className="px-6 py-3 border rounded-xl hover:bg-slate-50">Cancel</button>
+            <div className="flex gap-3 pb-1">
+              <button type="submit" className="px-6 py-3.5 bg-[#0b1e69] text-white rounded-xl font-bold shadow-md hover:bg-[#071344] transition-all">Save</button>
+              <button type="button" onClick={() => setShowForm(false)} className="px-6 py-3.5 border border-slate-200 rounded-xl hover:bg-slate-50 font-semibold transition">Cancel</button>
+            </div>
           </form>
         </div>
       )}
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         {chapters.map((chapter, idx) => (
-          <div key={chapter._id} className="bg-white rounded-2xl p-5 border flex flex-wrap items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shrink-0">{idx + 1}</div>
+          <div key={chapter._id} className="bg-white rounded-3xl p-5 border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-wrap items-center gap-5 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+            <div className="w-12 h-12 rounded-2xl bg-[#0b1e69]/5 text-[#0b1e69] flex items-center justify-center font-black text-lg shrink-0">{idx + 1}</div>
             <div className="flex-1 min-w-[200px]">
-              <h3 className="font-semibold text-slate-900">{chapter.title}</h3>
-              <p className="text-sm text-slate-400">{chapter.duration || "No duration set"} {chapter.isFree && <span className="text-green-600 font-medium ml-2">• Free</span>}</p>
+              <h3 className="font-bold text-slate-900 text-lg">{chapter.title}</h3>
+              <p className="text-sm text-slate-500 mt-0.5">{chapter.duration || "No duration set"} {chapter.isFree && <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-2 py-0.5 rounded-md text-xs font-bold ml-2">FREE</span>}</p>
             </div>
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-3 flex-wrap">
               {chapter.videoUrl ? (
-                <span className="flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-medium"><Film size={12} /> Video ✓</span>
+                <span className="flex items-center gap-1.5 px-4 py-2 bg-green-50 border border-green-100 text-green-700 rounded-xl text-xs font-bold"><Film size={14} /> Video ✓</span>
               ) : (
-                <label className="flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-xs font-medium cursor-pointer hover:bg-blue-100 transition">
-                  <Upload size={12} /> Upload Video
+                <label className="flex items-center gap-1.5 px-4 py-2 bg-[#0b1e69]/5 text-[#0b1e69] rounded-xl text-xs font-bold cursor-pointer hover:bg-[#0b1e69]/10 transition">
+                  <Upload size={14} /> Video
                   <input type="file" accept="video/*" className="hidden" onChange={e => e.target.files[0] && handleVideoUpload(chapter._id, e.target.files[0])} />
                 </label>
               )}
               {chapter.pdfNotes ? (
-                <span className="flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-medium"><FileText size={12} /> PDF ✓</span>
+                <span className="flex items-center gap-1.5 px-4 py-2 bg-green-50 border border-green-100 text-green-700 rounded-xl text-xs font-bold"><FileText size={14} /> PDF ✓</span>
               ) : (
-                <label className="flex items-center gap-1 px-3 py-1.5 bg-amber-50 text-amber-600 rounded-lg text-xs font-medium cursor-pointer hover:bg-amber-100 transition">
-                  <Upload size={12} /> Upload PDF
+                <label className="flex items-center gap-1.5 px-4 py-2 bg-[#e56301]/5 text-[#e56301] rounded-xl text-xs font-bold cursor-pointer hover:bg-[#e56301]/10 transition">
+                  <Upload size={14} /> PDF
                   <input type="file" accept=".pdf" className="hidden" onChange={e => e.target.files[0] && handlePdfUpload(chapter._id, e.target.files[0])} />
                 </label>
               )}
+              <div className="w-px h-8 bg-slate-200 mx-1 hidden sm:block"></div>
               <button onClick={() => { setEditing(chapter); setForm({ title: chapter.title, duration: chapter.duration, order: chapter.order, isFree: chapter.isFree }); setShowForm(true); }}
-                className="p-2 rounded-lg hover:bg-slate-100"><Edit size={16} className="text-blue-600" /></button>
-              <button onClick={() => handleDelete(chapter._id)} className="p-2 rounded-lg hover:bg-red-50"><Trash2 size={16} className="text-red-500" /></button>
+                className="p-2.5 rounded-xl text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition"><Edit size={18} /></button>
+              <button onClick={() => handleDelete(chapter._id)} className="p-2.5 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 transition"><Trash2 size={18} /></button>
             </div>
           </div>
         ))}
-        {chapters.length === 0 && <div className="bg-white rounded-2xl p-12 text-center border"><p className="text-slate-400">No chapters yet. Add your first chapter!</p></div>}
+        {chapters.length === 0 && (
+          <div className="bg-white rounded-3xl p-16 text-center border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+            <div className="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto mb-4"><BookOpen size={32} /></div>
+            <p className="text-slate-500 font-medium">No chapters yet. Add your first chapter!</p>
+          </div>
+        )}
       </div>
     </div>
   );

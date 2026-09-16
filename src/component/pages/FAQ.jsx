@@ -6,7 +6,7 @@ const faqs = [
     category: "General",
     items: [
       { q: "What is GTC Education Academy?", a: "GTC Education Academy is the training division of GTC Solutions, focused on providing practical, industry-oriented accounting, finance, taxation, and language training to students, graduates, and working professionals in Coimbatore." },
-      { q: "Where is GTC Education Academy located?", a: "We are located at Kurumbapalayam Road, Kurumbapalayam Nagar, Coimbatore, Tamil Nadu – 641104." },
+      { q: "Where is GTC Education Academy located?", a: "We are located at 3/83 Belladhi KurumbaPalayam Theramplyam post Pogalur via KurumbaPalayam -641104." },
       { q: "What are the batch timings?", a: "We offer flexible batch timings including morning (9 AM – 12 PM), afternoon (2 PM – 5 PM), and evening (6 PM – 8 PM) batches. Weekend batches are also available for working professionals." },
       { q: "Do you offer online classes?", a: "Yes! We offer recorded video courses that you can access anytime, anywhere on mobile or desktop. Our recorded courses include video lectures, PDF notes, and course completion certificates." },
     ],
@@ -131,7 +131,7 @@ export default function FAQ() {
               <a href="/contact" className="px-8 py-3 bg-white text-blue-700 font-semibold rounded-xl hover:scale-105 transition">
                 Contact Us
               </a>
-              <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" className="px-8 py-3 border border-white/30 rounded-xl hover:bg-white/10 transition">
+              <a href="https://wa.me/918438898767" target="_blank" rel="noopener noreferrer" className="px-8 py-3 border border-white/30 rounded-xl hover:bg-white/10 transition">
                 WhatsApp Us
               </a>
             </div>
