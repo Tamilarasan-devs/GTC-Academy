@@ -51,9 +51,7 @@ export default function Contact() {
                   <div>
                     <h3 className="font-bold text-[#0b1e69] mb-1">Our Location</h3>
                     <p className="text-slate-600 leading-relaxed">
-                      3/83 Belladhi KurumbaPalayam<br />
-                      Theramplyam post Pogalur<br />
-                      via KurumbaPalayam -641104
+                      3/83 Belladhi KurumbaPalayam Theramplyam post Pogalur via KurumbaPalayam -641104
                     </p>
                   </div>
                 </div>
@@ -64,7 +62,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="font-bold text-[#0b1e69] mb-1">Call / WhatsApp</h3>
-                    <p className="text-slate-600 mb-1">+91 84388 98767</p>
+                    <p className="text-slate-600 mb-1">8438898767</p>
                   </div>
                 </div>
 
@@ -151,7 +149,7 @@ export default function Contact() {
       {/* Map */}
       <section className="h-[400px] w-full bg-slate-200 mt-10">
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15663.144888065471!2d77.01865245!3d11.0558169!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba857b6f72c676f%3A0x6b2e16fdf99f36e8!2sKurumbapalayam%2C%20Coimbatore%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1684488059000!5m2!1sen!2sin"
+          src="https://maps.google.com/maps?q=GTC+SOLUTIONS,+Kurumbapalayam+Rd,+Kurumbapalayam+Nagar,+Tamil+Nadu+641104&output=embed"
           width="100%"
           height="100%"
           style={{ border: 0 }}

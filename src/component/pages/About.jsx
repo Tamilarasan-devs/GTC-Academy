@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../../utils/api";
 import { Users, Target, BookOpen, CheckCircle, Eye, TrendingUp, Award, Star } from "lucide-react";
+import founderImg from "../../assets/founder.jpeg";
 
 export default function About() {
   const [faculty, setFaculty] = useState([]);
@@ -154,7 +155,7 @@ export default function About() {
               <div className="absolute inset-0 rounded-3xl rotate-3 scale-105 opacity-20" style={{ background: "linear-gradient(135deg,#0ea5e9,#6366f1)" }} />
               <div className="relative rounded-3xl overflow-hidden h-[480px]">
                 <img
-                  src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=2000"
+                  src={founderImg}
                   alt="Founder Mr. Ganesh Kumar"
                   className="w-full h-full object-cover"
                 />
